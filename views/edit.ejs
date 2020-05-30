@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+     <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>TODO list</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/mycss.css">
+    </head>   
+    <body>
+        <h1>ToDo List </h1>
+            <div class="input-group-vertical">
+                <form class="col-6 mx-auto" action="/submitEdit" method="POST">
+                    <input type="text" class="form-control" name="item" id="item" value="<%= Todo[0].name %>">
+                    <textarea class="form-control" id="description" name="description" placeholder="<%= Todo[0].value %>"></textarea>
+                    <button name="edit" value="<%= Todo[0].name %>" type="submit" class="btn btn-primary">Potvrdit</button>
+                    <a href="/" class="btn btn-danger cancel-btn" id="cancelAdd">Zrušit</a>
+                </form>
+                
+            </div>
+    </body>
+</html>

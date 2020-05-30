@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>Your tasks</title>
+    </head>      
+
+    <body>
+        <h1>ToDo Lists</h1>
+        <ul>
+			<% for(let i = 0; i < Tasks.length; i++) { %>
+                <li>
+                <h3 name="title"><%= Tasks[i].title %></h3>
+                <p class="card-text"><%= (Tasks[i].done ? "Hotovo" : "Nesplněno") %></p>
+                <div class="flex-column d-flex justify-content-end">
+					<form action="./edit" method="POST">
+						<button name="edit" value="<%= Tasks[i].title %>" role="button">Změnit</button>
+					</form>
+					<form action="./delete" method="POST">
+						<button name="delete" value="<%= Tasks[i].title %>" role="button">Odebrat</button> 
+					</form>
+					<form action="./complete" method="POST">
+						<button name="complete" value="<%= Tasks[i].title %>" role="button">Splnit</button>            
+					</form>
+				</div>
+                <p class="card-text value"><%= Tasks[i].content %></p>
+                </li>
+            <% } %>
+		</ul>
+    </body>
+</html>
