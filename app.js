@@ -13,7 +13,8 @@ var usersRouter = require('./routes/users');
 var registerRouter = require('./routes/register');
 var tasksRouter = require('./routes/tasks');
 
-mongoose.connect('mongodb://localhost:27017/todolist', {
+//mongodb://localhost:27017/todolist
+mongoose.connect('mongodb://heroku_7vdvrxnw:heroku_7vdvrxnw@ds135107.mlab.com:35107/heroku_7vdvrxnw', {
     useNewUrlParser: true, useUnifiedTopology: true
 }, (err, client) => {
     if (err) {
