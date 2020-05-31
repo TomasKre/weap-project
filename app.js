@@ -47,8 +47,10 @@ app.use('/users', usersRouter);
 app.use('/register', registerRouter);
 app.use('/tasks', tasksRouter);
 
- 
-const port = process.env.PORT || 4000;
+
+// local 3000, 4000, 5000
+//heroku 80, 8080???
+const port = 80;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 module.exports = app;
