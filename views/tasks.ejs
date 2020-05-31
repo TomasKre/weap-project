@@ -3,31 +3,55 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+		<script type="text/javascript" src="/public/javascripts/tasks_script.js"></script>
         <title>Your tasks</title>
     </head>      
 
     <body>
-        <h1>ToDo Lists</h1>
-        <ul>
+        <div style="font-size:32px">ToDo Lists
+			<button id="all" class="tasks_buttons">Všechny úkoly</button>
+			<button id="notfinished" class="tasks_buttons">Nedokončené úkoly</button>
+			<button id="finished" class="tasks_buttons">Dokončené úkoly</button>
+		</div>
+		<div>
+			<form action="./jsonall" method="GET">
+				<button id="jsonall" class="jsons">Všechny úkoly JSON</button>
+			</form>	
+			<form action="./jsonnotfinished" method="GET">	
+				<button action="./jsonnotfinished" id="jsonnotfinished" class="jsons">Nedokončené úkoly JSON</button>
+			</form>	
+			<form action="./jsonfinished" method="GET">
+				<button action="./jsonfinished" id="jsonfinished" class="jsons">Dokončené úkoly JSON</button>
+			</form>
+		</div>
+		<form id="addupdateform">
+            <label for="title">Nadpis úkolu:</label>
+            <input type="text" name="title" id="title" required autofocus><br />
+            <label for="content">Popis úkolu:</label>
+            <input type="content" name="content" id="content" required><br />
+			<button formmethod="POST" formaction="./add/" name="user" value="<%= userid %>" role="button">Přidej úkol</button> 
+		</form>
+        <ul style="list-style-type:none;">
 			<% for(let i = 0; i < Tasks.length; i++) { %>
-                <li>
-                <h3 name="title"><%= Tasks[i].title %></h3>
-                <p class="card-text"><%= (Tasks[i].done ? "Hotovo" : "Nesplněno") %></p>
-                <div class="flex-column d-flex justify-content-end">
-					<form action="./edit" method="POST">
-						<button name="edit" value="<%= Tasks[i].title %>" role="button">Změnit</button>
-					</form>
-					<form action="./delete" method="POST">
-						<button name="delete" value="<%= Tasks[i].title %>" role="button">Odebrat</button> 
-					</form>
-					<form action="./complete" method="POST">
-						<button name="complete" value="<%= Tasks[i].title %>" role="button">Splnit</button>            
+                <li style="margin: 10px; padding: 5px; height: 150px; width: 700px; border: solid 1px black; background-color: <%= Tasks[i].done ? bc = "#8f8" : bc = "#f88" %>">
+				<div style="font-size:24px"><%= Tasks[i].title %></div>
+                <div style="margin-top: -10px; float: right">
+					<form>
+						<button formmethod="POST" formaction="./finish/" name="fin_id" value="<%= Tasks[i]._id %>" role="button">Splnit</button>            
+					</form><br />
+					<form>
+						<button formmethod="POST" form="addupdateform" formaction="./update/" name="upd_id" value="<%= Tasks[i]._id %>" role="button">Změnit</button>
+					</form><br />
+					<form>
+						<button formmethod="POST" formaction="./delete/" name="del_id" value="<%= Tasks[i]._id %>" role="button">Odebrat</button> 
 					</form>
 				</div>
-                <p class="card-text value"><%= Tasks[i].content %></p>
+                <div style="font-size:14px"><%= Tasks[i].content %></div>
                 </li>
             <% } %>
 		</ul>
-    </body>
+		<form>
+			<button formmethod="GET" formaction="./logout/" role="button">Odhlásit se</button> 
+		</form>
+	</body>
 </html>

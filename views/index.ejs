@@ -17,7 +17,8 @@
                 <label for="password">Heslo:</label><br />
                 <input type="password" placeholder="Heslo" name="password" id="password" required><br />
                 <button id="submitlogin">Přihlásit</button>
-            </form>    
+            </form>
+			<%= badLogin ? "Nesprávné jméno/email nebo heslo" : "" %>
         </div>
 		<button id="register" onclick="window.location.href='/register'">Zaregistrovat se</button>
 

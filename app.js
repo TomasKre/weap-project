@@ -7,12 +7,13 @@ var config = require('config');
 var mongoose = require('mongoose');
 var ejs = require('ejs');
 const expressSession = require('express-session');
+const connectMongo = require('connect-mongo');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var registerRouter = require('./routes/register');
 var tasksRouter = require('./routes/tasks');
-
+//mongodb://heroku_7vdvrxnw:heroku_7vdvrxnw@ds135107.mlab.com:35107/heroku_7vdvrxnw
 //mongodb://localhost:27017/todolist
 mongoose.connect('mongodb://heroku_7vdvrxnw:heroku_7vdvrxnw@ds135107.mlab.com:35107/heroku_7vdvrxnw', {
     useNewUrlParser: true, useUnifiedTopology: true
@@ -24,47 +25,27 @@ mongoose.connect('mongodb://heroku_7vdvrxnw:heroku_7vdvrxnw@ds135107.mlab.com:35
 });
 
 var app = express();
-
-// view engine setup
-//app.set('views', path.join(__dirname, 'views'));
+const mongoStore = connectMongo(expressSession);
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-if (!config.get('PrivateKey')) {
-    console.error('FATAL ERROR: PrivateKey is not defined.');
-    process.exit(1);
-}
+app.use(express.static(path.join(__dirname, '/')));
 
 app.use(expressSession({
-    secret: 'secret'
+	secret: 'secret',
+    store: new mongoStore({
+        mongooseConnection: mongoose.connection
+    })
 }));
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
 
 app.use(express.json());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/register', registerRouter);
 app.use('/tasks', tasksRouter);
-
-/*
-app.get('/users/:username/tasks/', function (req, res) {
-  res.send(req.params)
-})*/
 
  
 const port = process.env.PORT || 4000;

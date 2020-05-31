@@ -8,34 +8,49 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const { User } = require('../models/user');
+const expressSession = require('express-session');
  
-router.get('/', function (req, res) {
-	res.render('./../views/index.ejs');
-})
+router.get('/', async (req, res) => {
+	// If user already logged in in this session
+	if (req.session.userId) {
+		var logged_user = await User.findOne({ _id: req.session.userId });
+        res.redirect('/tasks/' + logged_user.name + '/')
+    } else {		
+		res.render('./../views/index.ejs', {badLogin : false});
+	}
+});
 
 router.post('/', async (req, res) => {
- 
+	var validPassword;
+	
     // Find user 
-    var mail = await User.findOne({ email: req.body.email });
+    var mail = await User.findOne({ email: req.body.username });
 	if (!mail) {
-		var user = await User.findOne({ email: req.body.name });
+		var user = await User.findOne({ name: req.body.username });
 		if (!user) {
-			return res.status(400).send('Incorrect email or nickname.');
+			res.render('./../views/index.ejs', {badLogin : true});
 		} else {
 			// Login with name
-			const validPassword = await bcrypt.compare(req.body.password, user.password);
+			validPassword = await bcrypt.compare(req.body.password, user.password, (error, same) => {
+                if (same) {
+                    req.session.userId = user._id
+                    res.redirect('/tasks/' + user.name + '/')
+                } else {
+                    res.render('./../views/index.ejs', {badLogin : true});
+                }
+            });
 		}
-		
+	} else {
 		// Login with mail
-		const validPassword = await bcrypt.compare(req.body.password, mail.password);
+		validPassword = await bcrypt.compare(req.body.password, mail.password, (error, same) => {
+            if (same) {
+                req.session.userId = mail._id
+                res.redirect('/tasks/' + mail.name + '/')
+            } else {
+                res.render('./../views/index.ejs', {badLogin : true});
+            }
+        });
 	}
-	
-	if (!validPassword) {
-		return res.status(400).send('Incorrect password.');
-	}
-	const token = user.generateAuthToken();
-	res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
-	res.send(token);
 });
  
 function validate(req) {

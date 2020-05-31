@@ -1,19 +1,16 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const express = require("express");
+const expressSession = require('express-session');
+const connectMongo = require('connect-mongo');
+
+const app = new express();
  
 module.exports = function (req, res, next) {
- 
-    const token = req.header('x-auth-token');
-    if (!token) {
-        return res.status(401).send('Access denied. No JWT provided.');
-    }
- 
-    try {
-        const decoded = jwt.verify(token, config.get('PrivateKey'));
-        req.user = decoded;
+	if (req.session.userId) {
         next();
-    }
-    catch (ex) {
-        res.status(400).send('Invalid JWT.');
-    }
-}
+    } else {
+		res.redirect('./../../../')
+	}
+
+};

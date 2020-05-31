@@ -7,21 +7,7 @@ const router = express.Router();
 
 const taskmodel = mongoose.model('Task', Task);
 	
-router.get('/:username', async function(req, res) {
-	let user = await User.findOne({ name: req.params.username });
-	if (!user) {
-		res.status(404).send('Not found');
-	};
-	
-	const tasks = await taskmodel
-        .find({ user: user.id })
-		.select({ title: 1, content: 1});
-
-    res.render("tasks.ejs", {Tasks: tasks});
-	
-});
-
-router.get('/:username/json', async function(req, res) {
+router.get('/:username', auth, async function(req, res) {
 	let user = await User.findOne({ name: req.params.username });
 	if (!user) {
 		res.status(404).send('Not found');
@@ -31,19 +17,59 @@ router.get('/:username/json', async function(req, res) {
         .find({ user: user.id })
 		.select({ title: 1, content: 1, done: 1});
 
-    return res.send(tasks);
+    res.render("tasks.ejs", {Tasks: tasks, userid: user._id});
+	
+});
+
+router.get('/:username/jsonall', auth, async function(req, res) {
+	let user = await User.findOne({ name: req.params.username });
+	if (!user) {
+		res.status(404).send('Not found');
+	};
+	
+	const tasks = await taskmodel
+        .find({ user: user.id })
+		.select({ title: 1, content: 1, done: 1});
+
+    return res.json(tasks);
+	
+});
+
+router.get('/:username/jsonfinished', auth, async function(req, res) {
+	let user = await User.findOne({ name: req.params.username });
+	if (!user) {
+		res.status(404).send('Not found');
+	};
+	const tasks = await taskmodel
+        .find({ user: user.id, done: true})
+		.select({ title: 1, content: 1, done: 1});
+
+    return res.json(tasks);
+	
+});
+
+router.get('/:username/jsonnotfinished', auth, async function(req, res) {
+	let user = await User.findOne({ name: req.params.username });
+	if (!user) {
+		res.status(404).send('Not found');
+	};
+	
+	const tasks = await taskmodel
+        .find({ user: user.id, done: false })
+		.select({ title: 1, content: 1, done: 1});
+
+    return res.json(tasks);
 	
 });
 
 
-router.post('/:username', auth, async (req, res) => {
-
+router.post('/:username/add', auth, async (req, res) => {
     const { error } = validate(req.body.title, req.body.content, req.body.user);
 
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
-
+	
 	const taskdoc = new taskmodel({
 		title: req.body.title, 
 		content: req.body.content,
@@ -52,41 +78,56 @@ router.post('/:username', auth, async (req, res) => {
 	});
 
 	const result = await taskdoc.save();
-	console.log(result);
 	
-	res.redirect('/');
-	res.send();
+	res.redirect('./../');
 });
 
+router.post('/:username/finish', auth, async (req, res) => {
+    const finished = await taskmodel.findByIdAndUpdate(_id = req.body.fin_id, { $set: { done: true }});
 
+    if (!finished) {
+        return res.status(404).send('That task ID was not found');
+    }
+ 
+	const result = await finished.save();
 
+    res.redirect('./../');
+});
 
+router.post('/:username/update/', auth, async (req, res) => {
+	const { error } = validate(req.body.title, req.body.content);
 
-router.put('/:username/:id', async (req, res) => {
-    const { error } = validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
  
-    const task = await Task.findByIdAndUpdate(req.params.id, { title: req.body.title, title: req.body.title }, {
-        new: true
-    });
+    const updated = await taskmodel.findByIdAndUpdate(_id = req.body.upd_id, { title: req.body.title, content: req.body.content });
  
-    if (!task) {
+    if (!updated) {
         return res.status(404).send('That task ID was not found');
     }
  
-    res.send(task);
+    res.redirect("./../");
 });
 
-router.delete('/:username/:id', async (req, res) => {
-    const task = await Task.findByIdAndRemove(req.params.id);
+router.post('/:username/delete', auth, async (req, res) => {
+	
+	const deleted = await taskmodel.findByIdAndRemove({ _id: req.body.del_id});
  
-    if (!task) {
+    if (!deleted) {
         return res.status(404).send('That task ID was not found');
     }
  
-    res.send(task);
+    res.redirect("./../");
 });
+
+router.get('/:username/logout', auth, async (req, res) => {
+	console.log("__________LOGOUT_________________");
+	console.log(req.session);
+    req.session.userId = null;
+    res.redirect("./../../../");
+});
+
+
  
 module.exports = router;
