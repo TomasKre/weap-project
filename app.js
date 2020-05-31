@@ -17,7 +17,7 @@ var tasksRouter = require('./routes/tasks');
 
 //mongodb://heroku_7vdvrxnw:8rv6g80s79esttcefprpmcdsq2@ds135107.mlab.com:35107/heroku_7vdvrxnw
 //mongodb://localhost:27017/todolist
-mongoose.connect('mongodb://localhost:27017/todolist', {
+mongoose.connect('ongodb://heroku_7vdvrxnw:8rv6g80s79esttcefprpmcdsq2@ds135107.mlab.com:35107/heroku_7vdvrxnw', {
     useNewUrlParser: true, useUnifiedTopology: true
 }, (err, client) => {
     if (err) {
@@ -52,7 +52,7 @@ app.use('/tasks', tasksRouter);
 
 // local 3000, 4000, 5000
 //heroku 80, 8080
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 module.exports = app;
