@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+		<script type="text/javascript" src="/public/javascripts/login_script.js"></script>
         <title>Login in</title>
     </head>      
 
@@ -16,7 +16,7 @@
                 <input type="username" placeholder="Uživatelské jméno" name="username" id="username" required autofocus><br />
                 <label for="password">Heslo:</label><br />
                 <input type="password" placeholder="Heslo" name="password" id="password" required><br />
-                <button id="submitlogin">Přihlásit</button>
+                <button id="login">Přihlásit</button>
             </form>
 			<%= badLogin ? "Nesprávné jméno/email nebo heslo" : "" %>
         </div>

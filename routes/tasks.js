@@ -17,7 +17,7 @@ router.get('/:username', auth, async function(req, res) {
         .find({ user: user.id })
 		.select({ title: 1, content: 1, done: 1});
 
-    res.render("tasks.ejs", {Tasks: tasks, userid: user._id});
+    res.render("tasks.ejs", {Tasks: tasks, userid: user._id, error: ""});
 	
 });
 
@@ -122,10 +122,8 @@ router.post('/:username/delete', auth, async (req, res) => {
 });
 
 router.get('/:username/logout', auth, async (req, res) => {
-	console.log("__________LOGOUT_________________");
-	console.log(req.session);
     req.session.userId = null;
-    res.redirect("./../../../");
+    res.redirect("/");
 });
 
 

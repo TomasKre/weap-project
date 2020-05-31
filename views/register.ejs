@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+		<script type="text/javascript" src="/public/javascripts/register_script.js"></script>
         <title>Register</title>
     </head>      
 
@@ -20,7 +20,8 @@
                 <input type="password" placeholder="Heslo" name="password1" id="password1" required><br />
 				<label for="password2">Zopakujte heslo:</label><br />
                 <input type="password" placeholder="Heslo" name="password2" id="password2" required><br />
-                <button type="submit" id="submitlogin">Zaregistrovat</button>
+				<%= err %> </ br>
+                <button type="submit" id="register">Zaregistrovat</button>
             </form>    
         </div>
 

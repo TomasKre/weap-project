@@ -10,7 +10,7 @@ const expressSession = require('express-session');
 
 
 router.get('/', function (req, res) {
-	res.render('./../views/register.ejs');
+	res.render('./../views/register.ejs', {err: ""});
 });
  
 router.post('/', async (req, res) => {
@@ -18,11 +18,11 @@ router.post('/', async (req, res) => {
     // Check if this user already exisits
 	console.log(req.body);
     if (await User.findOne({ email: req.body.email })) {
-        return res.status(400).send('Tento email je již používán!');
+        res.render('./../views/register.ejs', { err: 'Tento email je již používán!' });
 	} else if(await User.findOne({ name: req.body.username })) {
-		return res.status(400).send('Toto uživatelské jméno je již obsazené!');
+		res.render('./../views/register.ejs', { err: 'Toto uživatelské jméno je již obsazené!' });
     } else if(req.body.password1 != req.body.password2) {
-		return res.status(400).send('Hesla se neshodují!');
+		res.render('./../views/register.ejs', { err: 'Hesla se neshodují!' });
 	} else {
         // Insert the new user if they do not exist yet
         user = new User({
@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
  
 function validate(req) {
     const schema = {
-		name: Joi.string().min(5).max(64).required(),
+		name: Joi.string().min(5).max(63).required(),
         email: Joi.string().min(5).max(255).required().email(),
         password: Joi.string().min(5).max(255).required()
     };

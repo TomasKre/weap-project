@@ -1,12 +1,42 @@
-window.addEventListener("DOMContentLoaded", script);
+window.addEventListener("DOMContentLoaded", script_start);
 
-function script() {
-	buttons = document.getElementsByClassName("tasks_buttons")
-
-	for(var i = 0; i < buttons.length; i++) {
-		addEventListener("click", displayTasks);
-	}
+function script_start() {
+	addEventListenersToFilterButtons();
+	addEventListenersToAddUpdateButtons();	
 };
+
+function addEventListenersToAddUpdateButtons () {
+	buttons = document.getElementsByClassName("crud_buttons")
+	
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].onclick = checkForm;
+	}
+}
+
+function addEventListenersToFilterButtons () {
+	buttons = document.getElementsByClassName("tasks_buttons")
+	
+	for(var i = 0; i < buttons.length; i++) {
+		buttons[i].addEventListener("click", displayTasks);
+	}
+}
+
+function checkForm() {
+	title = document.getElementById("title");
+	content = document.getElementById("content");
+	console.log(title.value);
+	if(content.value.length <= 256) {
+		if (title.value.length <= 64) {
+			return true;
+		} else {
+			alert("Nadpis je příliš dlouhý (max 64 znaků).");
+			return false;
+		}
+	} else {
+		alert("Popisek je příliš dlouhý (max 256 znaků).");
+		return false;
+	}
+}
 
 function displayTasks(eventOnButton) {
 	leaves = document.getElementsByTagName("li");

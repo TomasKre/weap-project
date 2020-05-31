@@ -9,9 +9,10 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const { User } = require('../models/user');
 const expressSession = require('express-session');
- 
+	
 router.get('/', async (req, res) => {
 	// If user already logged in in this session
+	req.session.userId = null;
 	if (req.session.userId) {
 		var logged_user = await User.findOne({ _id: req.session.userId });
         res.redirect('/tasks/' + logged_user.name + '/')
